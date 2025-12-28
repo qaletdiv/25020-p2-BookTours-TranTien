@@ -6,11 +6,9 @@ const app = express();
 const JWT_SECRET = "PROJECT_MANAGER_SECRET";
 const port = 5000;
 
-// 👉 Nếu port frontend của học viên khác 5173 hãy đổi lại thành port phù hợp
 app.use(cors());
 app.use(express.json());
 
-// Dữ liệu mẫu
 let users = [];
 
 let categories = [
@@ -1394,7 +1392,6 @@ const orders = [];
 
 const cartOrder = [];
 
-// Middleware xác thực JWT
 const authenticateJWT = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "Không có token" });
@@ -1440,7 +1437,6 @@ products = products.map((product) => ({
 //API Products theo filter trang Product
 app.get("/api/products", (req, res) => {
   const { id } = req.query;
-  // Thêm ngày ngày đi, ngày về cho từng tour
   let filterProducts = products;
 
   // Nếu có id → lọc theo categoryid trước
@@ -1454,7 +1450,6 @@ app.get("/api/products", (req, res) => {
     return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
   }
 
-  //Còn không có những thằng trên thì nó sẽ hiện ra sản phẩm như thường
   res.json(filterProducts);
 });
 
@@ -1519,7 +1514,7 @@ app.get("/api/toursFilter", (req, res) => {
   });
 });
 
-//viết lại redux truyền slug
+//API chi tiết sản phẩm
 app.get("/api/products/:slug", (req, res) => {
   const product = products.find((p) => p.slug === req.params.slug);
   if (product) res.json(product);
@@ -1600,7 +1595,6 @@ app.get("/api/orders", authenticateJWT, (req, res) => {
 app.post("/api/orders", authenticateJWT, (req, res) => {
   const newOrder = {
     id: Date.now().toString(),
-    //req.user.email lấy từ req.user = user ở middleware
     userEmail: req.user.email,
     userName: req.user.name,
     userPhone: req.user.phone,
@@ -1615,7 +1609,6 @@ app.post("/api/orders", authenticateJWT, (req, res) => {
   orders.push(newOrder);
   res.status(201).json(newOrder);
 });
-//Trả về bên front đơn vừa tạo rồi từ đó gọi tiếp API dưới
 
 //Api chi tiết đơn hàng
 app.get("/api/orders/:id", authenticateJWT, (req, res) => {
