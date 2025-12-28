@@ -1,36 +1,19 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-// Giải thích	Ý nghĩa
-// Formik	Bao toàn bộ form
-// Form	Thay cho <form>
-// Field	Thay cho <input>
-// ErrorMessage	Hiển thị lỗi validate
 
 import * as Yup from "yup";
-// Yup chính là thư viện để nó tự động kiểm tra dữ liệu form (validate)
 
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../redux/slices/authSlice";
 
-//RegisterSchema - Khai báo luật validate cho form | Yup.object (kiểm tra cả form) = nói với Yup rằng: “Dữ liệu tôi cần kiểm tra là một object, và mỗi field trong object đó sẽ có luật kiểm tra riêng.”
 const RegisterSchema = Yup.object({
   name: Yup.string().required("Vui lòng nhập họ và tên"),
   phone: Yup.string()
     .matches(/^[0-9]{10}$/, "Số điện thoại phải gồm đúng 11 chữ số")
     .required("Vui lòng nhập số điện thoại"),
-  // Giải thích nhanh:
-  // ^[0-9]{11}$
-  // ^ bắt đầu chuỗi
-  // [0-9] chỉ cho phép số
-  // {11} đúng 11 số
-  // $ kết thúc chuỗi
   email: Yup.string()
     .email("Email không hợp lệ")
     .required("Vui lòng nhập email"),
-  // VD với email trên
-  // Phải là chuỗi
-  // Phải đúng định dạng email
-  // Không được bỏ trống
   password: Yup.string()
     .min(6, "Mật khẩu tối thiểu 6 ký tự")
     .matches(
@@ -41,8 +24,6 @@ const RegisterSchema = Yup.object({
   passwordConfirm: Yup.string()
     .oneOf([Yup.ref("password")], "Mật khẩu không khớp")
     .required("Vui lòng nhập lại mật khẩu"),
-  // oneOf() - phải giống 1 trong các giá trị
-  // Yup.ref("password") nghĩa là: Lấy giá trị của field password để so sánh | ref = reference (tham chiếu)
 });
 
 const Register = () => {
@@ -51,9 +32,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //values và setSubmitting do Formik sinh ra
-  //values = toàn bộ dữ liệu form { name, phone, email, password, passwordConfirm } || values ban đầu lấy từ initialValues, và sau đó được cập nhật theo input người dùng
-  //{ setSubmitting } để quản lý trạng trái submit tránh submit nhiều lần khi setSubmitting(false)
+
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(
@@ -96,11 +75,7 @@ const Register = () => {
           }}
           validationSchema={RegisterSchema}
           onSubmit={handleSubmit}
-          // initialValues - Giá trị ban đầu
-          // validationSchema - Luật validate
-          // onSubmit	- Hàm khisubmit
         >
-          {/* isSubmitting đang submit, còn setSubmitting=false ở trên là nó ngưng khi không submit nữa */}
           {({ isSubmitting }) => (
             <Form
               className="
@@ -129,7 +104,6 @@ const Register = () => {
                 <ErrorMessage
                   name="name"
                   component="p"
-                  // component="p" nói với Formik rằng: “Hãy render lỗi này bằng thẻ HTML <p>”
                   className="mt-1 text-xs text-red-500"
                 />
               </div>

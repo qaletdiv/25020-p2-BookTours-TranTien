@@ -16,7 +16,7 @@ const SelectRadio = ({tourOptions, handleFilterRadio}) => {
             {tourOptions.map((option) => (
                 <label 
                     key={option.id}
-                    className="flex items-center cursor-pointer select-none" // select-none để tránh highlight text khi click
+                    className="flex items-center cursor-pointer select-none" 
                 >
                     {/* 3. Input Radio - Dùng peer và hidden */}
                     <input
@@ -24,9 +24,9 @@ const SelectRadio = ({tourOptions, handleFilterRadio}) => {
                         name="radio"
                         id={option.id}
                         value={option.id}
-                        checked={selectedTour === String(option.id)} // Trạng thái được kiểm soát bởi state. Dùng string vì lát nữa khi hàm handleChange được gọi thì event.target.value trong đó luôn là string
-                        onChange={handleChange}              // Xử lý sự kiện thay đổi
-                        className="peer hidden" //Hidden để Ẩn nút tròn mặc định của input radio
+                        checked={selectedTour === String(option.id)} 
+                        onChange={handleChange}    
+                        className="peer hidden"
                     />
                     {/* 4. Custom Radio Circle (Mô phỏng nút) */}
                     {/* Vòng tròn */}

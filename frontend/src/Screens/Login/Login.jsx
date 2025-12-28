@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../redux/slices/authSlice";
 
-// LoginSchema - Luật validate cho form đăng nhập
 const LoginSchema = Yup.object({
   email: Yup.string()
     .email("Email không hợp lệ")
@@ -20,7 +19,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // values và setSubmitting do Formik sinh ra
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(

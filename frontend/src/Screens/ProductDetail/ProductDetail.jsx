@@ -16,6 +16,7 @@ import { Tabs, Tab, TabList, TabPanel } from "../../components/Tabs/Tabs";
 import LoadingSpinner from "../../components/Loading/Loading";
 import TourRelevant from "../../components/TourRelevant/TourRelevant";
 import { fetchOrders, fetchOrderId } from "../../redux/slices/orderSlice";
+import RevealOnScroll from "../../components/RevealOnScroll/RevealOnScroll";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -31,7 +32,6 @@ const ProductDetail = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
 
-  //Click vào ảnh thì
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -44,17 +44,9 @@ const ProductDetail = () => {
     setTourPrice(null);
   }, [slug, dispatch]);
 
-  //Khi xem ảnh thì không scroll được nữa
   useEffect(() => {
-    //document → Toàn bộ trang HTML | body → Thẻ <body> (chứa toàn bộ nội dung bạn nhìn thấy) | style → Style inline của thẻ đó | overflow → Thuộc tính CSS quyết định có cho cuộn hay không
     document.body.style.overflow = isOpen ? "hidden" : "auto";
   }, [isOpen]);
-
-  // console.log("relatedProduct change:", relatedProduct);
-  // console.log("DEPARTURES:", product?.departures);
-  console.log("user:", user);
-  console.log("orderByUser:", orderByUser);
-  console.log("orders:", orders);
 
   //Hàm chuyển ngày, tháng, năm chỉ còn ngày với tháng
   const formatDate = (dateStr) =>
@@ -150,6 +142,7 @@ const ProductDetail = () => {
             </button>
           </div>
         </div>
+        <RevealOnScroll delay={200}>
         <div className="md:mt-8 flex flex-col space-y-1 md:flex-row md:space-x-1 md:space-y-0 h-[462px]">
           <div className="w-full h-2/3 md:w-1/2 md:h-full relative overflow-hidden">
             <img
@@ -205,6 +198,7 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
+        </RevealOnScroll>
         <div className="w-full -mt-12 md:hidden">
           <div className="h-auto">
             <p className="font-semibold text-xl">Thông Tin Cơ Bản</p>
@@ -295,11 +289,6 @@ const ProductDetail = () => {
                     )
                   )}
                 </ul>
-                {/* Object.entries dùng để biến object thành mảng
-                map(([day, content]) là mỗi phần tử trong mảng là 1 cặp mảng con. ( day1: "Hà Nội – Paris" =>  ["day1", "Hà Nội – Paris"])
-                {day.replace("day", "Ngày ")} đổi tên day thành Ngày 
-                className="capitalize" là viết hoa chữ cái đầu mỗi từ
-                */}
               </TabPanel>
 
               {/* ===== TAB 3: QUY ĐỊNH & PHỤ THU ===== */}
@@ -369,10 +358,12 @@ const ProductDetail = () => {
         </div>
         <div></div>
       </div>
+      <RevealOnScroll delay={300}>
       <TourRelevant
         title={"Sản Phẩm Liên Quan"}
         data={relatedProduct.slice(0, 4)}
       />
+      </RevealOnScroll>
       {/* Click vào ảnh để xem hình */}
       <div
         className={`

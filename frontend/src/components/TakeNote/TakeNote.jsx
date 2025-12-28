@@ -18,23 +18,19 @@ const TakeNote = ({ setUserNote }) => {
     setCheckedMap((prev) => ({
       ...prev,
       [note.id]: !prev[note.id],
-      //Vì nó là object động nên nó nằm trong [id]
     }));
 
     setTickNote((prev) => {
       const isChecked = checkedMap[note.id];
 
-      // nếu đang check → bỏ
       if (isChecked) {
         return prev.filter((item) => item !== note.label);
       }
 
-      // nếu chưa check → thêm
       return [...prev, note.label];
     });
   };
 
-  //Cập nhật lại mới mỗi khi khách hàng thay đổi thông tin note
   useEffect(() => {
     setUserNote({
       have: tickNote,
@@ -65,7 +61,6 @@ const TakeNote = ({ setUserNote }) => {
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
-                  //input sẽ được check nếu nó có trong checkedMap và giá trị là true
                   checked={checkedMap[note.id]}
                   onChange={() => toggle(note)}
                   className="hidden"

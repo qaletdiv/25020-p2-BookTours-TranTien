@@ -16,15 +16,12 @@ const GuestDetail = ({ type, onChange }) => {
   const [selectedSex, setSelectedSex] = useState(null);
   const [birthDate, SetBirthDate] = useState(null);
 
-  //Khi thông tin cá nhân của khách được cập nhật thì nó sẽ lưu vậy đây
   const [guest, setGuest] = useState({
     fullName: "",
     sex: null,
     birthday: null,
   });
 
-  //Khi guest thay đổi thì useEffect chạy, nó sẽ gọi cái hàm onChange ở GuestInfo với 1 dữ liệu mới. 
-  // “Nếu onChange tồn tại → gọi nó. Nếu không tồn tại → bỏ qua, không lỗi”
   useEffect(() => {
     onChange?.(guest);
   }, [guest]);
@@ -56,7 +53,7 @@ const GuestDetail = ({ type, onChange }) => {
   };
 
   const secondToggleDropdown = () => {
-    setIsOpenSecond(!isOpenSecond); // Giữ nguyên code bạn đã sửa logic
+    setIsOpenSecond(!isOpenSecond); 
   };
 
   return (
@@ -75,7 +72,6 @@ const GuestDetail = ({ type, onChange }) => {
             <input
               type="text"
               placeholder="Nhập Họ và tên"
-              //Thêm thông tin Họ và tên mới
               value={guest.fullName}
               onChange={(e) => setGuest({ ...guest, fullName: e.target.value })}
               className="w-full text-xs focus:outline-none px-4 py-5 mb-3"
@@ -168,9 +164,8 @@ const GuestDetail = ({ type, onChange }) => {
                 selected={birthDate}
                 onChange={(date) => {
                   SetBirthDate(date);
-                  //Cập nhật ngày sinh mới
                   setGuest({ ...guest, birthday: date });
-                  setIsOpenSecond(false); // chọn xong đóng lịch
+                  setIsOpenSecond(false); 
                 }}
                 inline
                 showMonthDropdown
@@ -181,9 +176,6 @@ const GuestDetail = ({ type, onChange }) => {
             </div>
           </div>
         </div>
-
-        {/* Tích chọn thêm phòng đơn */}
-        {/* giữ nguyên comment của bạn */}
       </div>
     </div>
   );
