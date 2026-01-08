@@ -134,7 +134,7 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-20 gap-y-20 mb-20">
           {services.map((item) => (
             <div key={item.id}>
-              <div className="relative w-[364px] h-[430px] mx-auto">
+              <div className="relative w-full max-w-[364px] mx-auto">
                 <img src={item.image} className="w-full h-auto" />
 
                 <div className="absolute p-4 bg-white top-[75%] w-[334px] left-1/2 -translate-x-1/2 shadow-lg">

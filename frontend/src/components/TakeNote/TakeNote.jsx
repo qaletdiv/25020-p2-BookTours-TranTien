@@ -61,7 +61,7 @@ const TakeNote = ({ setUserNote }) => {
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
-                  checked={checkedMap[note.id]}
+                  checked={checkedMap[note.id] || false}
                   onChange={() => toggle(note)}
                   className="hidden"
                 />

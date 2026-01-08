@@ -1402,7 +1402,6 @@ const authenticateJWT = (req, res, next) => {
   });
 };
 
-
 // Hàm tạo danh sách các ngày khởi hành, ngày về cho mỗi tour
 const generateDepartures = (product, count = 4) => {
   const baseStart = new Date(product.startDate.replace("2025", "2026"));
@@ -1455,21 +1454,14 @@ app.get("/api/products", (req, res) => {
 
 //API Products theo filter trang Home
 app.get("/api/toursFilter", (req, res) => {
-  const {
-    categoryId,
-    departure,
-    destination,
-    startDate,
-    durationRange,
-  } = req.query;
+  const { categoryId, departure, destination, startDate, durationRange } =
+    req.query;
 
   let result = [...products];
 
   // 1. Lọc loại tour
   if (categoryId) {
-    result = result.filter(
-      (tour) => tour.categoryid === Number(categoryId)
-    );
+    result = result.filter((tour) => tour.categoryid === Number(categoryId));
   }
 
   // 2. Lọc điểm đi
@@ -1493,17 +1485,13 @@ app.get("/api/toursFilter", (req, res) => {
   // 4. Lọc theo ngày khởi hành
   if (startDate) {
     result = result.filter((tour) =>
-      tour.departures.some(
-        (d) => d.startDate === startDate
-      )
+      tour.departures.some((d) => d.startDate === startDate)
     );
   }
 
   // 5. Lọc theo số ngày
   if (durationRange) {
-    result = result.filter(
-      (tour) => tour.durationRange === durationRange
-    );
+    result = result.filter((tour) => tour.durationRange === durationRange);
   }
 
   toursFilter.push(result);
@@ -1546,7 +1534,7 @@ app.post("/api/signup", (req, res) => {
     email,
     password,
     name,
-    phone, 
+    phone,
     id: Date.now().toString(),
   };
   users.push(newUser);
@@ -1561,9 +1549,13 @@ app.post("/api/login", (req, res) => {
   const user = users.find((u) => u.email === email && u.password === password);
   if (!user)
     return res.status(401).json({ message: "Thông tin đăng nhập sai" });
-  const token = jwt.sign({ email: user.email, name: user.name, phone: user.phone }, JWT_SECRET, {
-    expiresIn: "10h",
-  });
+  const token = jwt.sign(
+    { email: user.email, name: user.name, phone: user.phone },
+    JWT_SECRET,
+    {
+      expiresIn: "10h",
+    }
+  );
   res.json({
     accessToken: token,
     user: {
@@ -1598,11 +1590,20 @@ app.post("/api/orders", authenticateJWT, (req, res) => {
     userEmail: req.user.email,
     userName: req.user.name,
     userPhone: req.user.phone,
-    productId: req.body.productId,
-    productName: req.body.productName,
-    price: req.body.price,
-    departureDate: req.body.departureDate,
-    returnDate: req.body.returnDate,
+    productId: req.body.orderByUser?.productId || req.body.productId,
+    productName: req.body.orderByUser?.productName || req.body.productName,
+    price: req.body.orderByUser?.price || req.body.price,
+    departureDate:
+      req.body.orderByUser?.departureDate || req.body.departureDate,
+    returnDate: req.body.orderByUser?.returnDate || req.body.returnDate,
+    orderByUser: req.body.orderByUser,
+    userInfo: req.body.userInfo,
+    adultCount: req.body.adultCount,
+    childCount: req.body.childCount,
+    guests: req.body.guests,
+    Total: req.body.Total,
+    userNote: req.body.userNote,
+    selectedPayment: req.body.selectedPayment,
     createdAt: new Date(),
   };
 
@@ -1612,7 +1613,7 @@ app.post("/api/orders", authenticateJWT, (req, res) => {
 
 //Api chi tiết đơn hàng
 app.get("/api/orders/:id", authenticateJWT, (req, res) => {
-  const order = orders.find((o) => o.id === req.params.id);
+  const order = orders.find((o) => o.id == req.params.id);
   if (order) res.status(200).json(order);
   else res.status(404).json({ message: "Không tìm thấy đơn hàng" });
 });
@@ -1626,7 +1627,7 @@ app.get("/api/cart", authenticateJWT, (req, res) => {
 app.post("/api/cart", authenticateJWT, (req, res) => {
   const newCart = {
     id: Date.now().toString(),
-   ...req.body,
+    ...req.body,
   };
 
   cartOrder.push(newCart);

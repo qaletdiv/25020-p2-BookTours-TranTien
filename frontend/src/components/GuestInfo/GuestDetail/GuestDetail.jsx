@@ -151,12 +151,12 @@ const GuestDetail = ({ type, onChange }) => {
             {/* DANH SÁCH TÙY CHỌN (DROPDOWN MENU) */}
             <div
               className={`
-                absolute mt-1 h-auto
+                absolute mt-1 h-[316px]
                 bg-white 
                 border border-gray-200 
                 shadow-lg 
                 z-10
-                overflow-auto
+                overflow-hidden
                 ${isOpenSecond ? "block" : "hidden"}
               `}
             >

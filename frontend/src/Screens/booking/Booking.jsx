@@ -9,27 +9,51 @@ import TakeNote from "../../components/TakeNote/TakeNote";
 import Agree from "../../components/Agree/Agree";
 import Payment from "../../components/Payment/Payment";
 import PayBox from "../../components/PayBox/PayBox";
-import { addCart } from "../../redux/slices/cartSlice";
+import { addOrder } from "../../redux/slices/orderSlice";
 
 const Booking = () => {
-  const orders = useSelector((state) => state.orders.orders);
+  const orders = useSelector((state) => state.orders.cart);
   const navigate = useNavigate();
-  const orderByUser = useSelector((state) => state.orders.orderByUser);
+  const orderByUser = useSelector((state) => state.cart.orderByUser) || {};
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.products.loading);
+
+  // Kiểm tra dữ liệu order có tồn tại
+  if (
+    !orderByUser ||
+    !orderByUser.price ||
+    Object.keys(orderByUser).length === 0
+  ) {
+    console.warn("orderByUser từ state.cart:", orderByUser);
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <p className="text-gray-500 text-lg mb-4">
+            Vui lòng chọn tour trước khi đặt hàng
+          </p>
+          <button
+            onClick={() => navigate("/tour-du-lich")}
+            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Quay lại trang tour
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const [adultCount, setAdultCount] = useState(0);
   const [childCount, setChildCount] = useState(0);
 
-  const adultTotal = adultCount * orderByUser.price;
-  const childTotal = childCount * orderByUser.price * 0.8;
+  const adultTotal = adultCount * (orderByUser.price || 0);
+  const childTotal = childCount * (orderByUser.price || 0) * 0.8;
   const Total = adultTotal + childTotal;
 
   //Gộp tất cả các thông tin của khách hàng lại
   const [userInfo, setUserInfo] = useState({
-    name: orderByUser.userName,
-    email: orderByUser.userEmail,
-    phone: orderByUser.userPhone,
+    name: orderByUser.userName || "",
+    email: orderByUser.userEmail || "",
+    phone: orderByUser.userPhone || "",
     address: "",
   });
 
@@ -38,8 +62,8 @@ const Booking = () => {
 
   //Gộp tất cả các note của khách hàng lại
   const [userNote, setUserNote] = useState({
-    have: null,
-    takeNote: null,
+    have: [],
+    takeNote: "",
   });
 
   //Khách hàng đã đồng ý tích đọc kĩ điều khoản
@@ -76,6 +100,16 @@ const Booking = () => {
 
     const error = validations.find((v) => v.condition);
     if (error) {
+      console.error("Validation Error:", error);
+      console.log(
+        "adultCount:",
+        adultCount,
+        "childCount:",
+        childCount,
+        "guests.length:",
+        guests.length
+      );
+      console.log("guests:", guests);
       alert(error.message);
       return;
     }
@@ -92,7 +126,7 @@ const Booking = () => {
       selectedPayment,
     };
 
-    dispatch(addCart(cart));
+    dispatch(addOrder(cart));
     navigate("/confirm");
   };
 

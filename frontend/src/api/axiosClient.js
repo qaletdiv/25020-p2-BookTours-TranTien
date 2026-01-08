@@ -2,7 +2,7 @@ import axios from "axios";
 import { logout } from '../redux/slices/authSlice';
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://backend-luaviet.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },

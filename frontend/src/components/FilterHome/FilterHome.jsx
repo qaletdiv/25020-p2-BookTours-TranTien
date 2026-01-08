@@ -256,7 +256,7 @@ const FilterHome = ({setHasFiltered}) => {
 
             {isOpenThird && (
               <div
-                className="absolute top-14 left-0 bg-white border shadow-lg z-10"
+                className="absolute top-14 left-0 bg-white border shadow-lg z-10 h-[315px]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <DatePicker

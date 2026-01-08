@@ -40,9 +40,7 @@ const Home = () => {
       <RevealOnScroll>
       <Banner />
       </RevealOnScroll>
-      <RevealOnScroll delay={100}>
       <FilterHome setHasFiltered={setHasFiltered} />
-      </RevealOnScroll>
       <RevealOnScroll>
         {hasFiltered &&
           (filterProduct.length > 0 ? (

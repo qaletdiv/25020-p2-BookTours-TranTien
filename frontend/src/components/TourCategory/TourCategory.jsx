@@ -59,7 +59,18 @@ const TourCategory = ({ title, data, handleSort }) => {
               <div
                 key={tour.id}
                 className="leading-6 cursor-pointer"
-                onClick={() => navigate(`/tour-du-lich/${tour.slug}`)}
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/tour-du-lich/${tour.slug}`);
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    navigate(`/tour-du-lich/${tour.slug}`);
+                  }
+                }}
               >
                 <div className="h-[219.23px] overflow-hidden">
                   <img

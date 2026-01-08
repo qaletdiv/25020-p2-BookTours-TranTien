@@ -46,9 +46,11 @@ const FLAGS = [
 const Contacts = ({ orderByUser, setUserInfo }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFlag, setSelectedFlag] = useState(FLAGS[0]);
-  const [username, setUserName] = useState(orderByUser.userName);
-  const [userEmail, setUserEmail] = useState(orderByUser.userEmail);
-  const [userPhone, setUserPhone] = useState(orderByUser.userPhone);
+  const [username, setUserName] = useState(orderByUser?.userName || "");
+  const [userEmail, setUserEmail] = useState(orderByUser?.userEmail || "");
+  const [userPhone, setUserPhone] = useState(
+    orderByUser?.userPhone ? String(orderByUser.userPhone) : ""
+  );
   const [userAddress, setUserAddress] = useState("");
 
   //Cập nhật lại mới mỗi khi khách hàng thay đổi thông tin
@@ -132,10 +134,10 @@ const Contacts = ({ orderByUser, setUserInfo }) => {
               </div>
 
               <input
-                type="number"
+                type="text"
                 value={userPhone}
                 placeholder="Nhập Số điện thoại liên hệ"
-                className="w-full text-xs focus:outline-none px-4 py-5 appearance-none"
+                className="w-full text-xs focus:outline-none px-4 py-5"
                 onChange={(e) => setUserPhone(e.target.value)}
               />
             </div>
