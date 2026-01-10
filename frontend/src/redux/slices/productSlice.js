@@ -9,15 +9,23 @@ export const fetchProduct = createAsyncThunk(
   }
 );
 
+export const fetchRelatedProducts = createAsyncThunk(
+  "products/fetchRelatedProducts",
+  async (slug) => {
+    const res = await axiosClient.get(`/products/relatedproducts/${slug}`);
+    return res.data;
+  }
+);
+
 // Thunk gọi API filter sản phẩm
 export const fetchFilterProducts = createAsyncThunk(
   "products/fetchFilterProducts",
   async (filterParams, thunkAPI) => {
-  //thunkAPI là 1 cái “hộp dụng cụ” Redux đưa cho bạn, bên trong có mấy thứ hữu ích như:
-  //dispatch → để dispatch action khác nếu muốn
-  //getState → xem state hiện tại
-  //rejectWithValue → trả về lỗi tuỳ chỉnh
-  //fulfillWithValue → trả về dữ liệu tuỳ chỉnh
+    //thunkAPI là 1 cái “hộp dụng cụ” Redux đưa cho bạn, bên trong có mấy thứ hữu ích như:
+    //dispatch → để dispatch action khác nếu muốn
+    //getState → xem state hiện tại
+    //rejectWithValue → trả về lỗi tuỳ chỉnh
+    //fulfillWithValue → trả về dữ liệu tuỳ chỉnh
     try {
       // filterParams = { id: "1" } hoặc { category: "domestic" }
       const query = new URLSearchParams(filterParams).toString();
@@ -42,33 +50,41 @@ export const fetchFilterProducts = createAsyncThunk(
 
 export const fetchProductId = createAsyncThunk(
   "products/fetchProductId",
-  async (fetchProductId) => {
-    const res = await axiosClient.get(`/products/${fetchProductId}`);
-    return res.data;
-  }
-)
-
-export const addProject = createAsyncThunk(
-  "products/addProject",
-  async (title) => {
-    const res = await axiosClient.post("/products", { title });
+  async (slug) => {
+    const res = await axiosClient.get(`/products/${slug}`);
     return res.data;
   }
 );
 
-export const updateProjectId = createAsyncThunk(
-  "products/updateProjectId",
-  async ({id, status, user}) => {
-    const res = await axiosClient.patch(`/products/${id}`, {status, leadId: user});
-    return res.data;
-  }
-)
+//Filter ở home
+export const fetchProductsFilter = createAsyncThunk(
+  "products/fetchProductsFilter",
+  async (filterHome, { rejectWithValue }) => {
+    try {
+      const params = new URLSearchParams();
 
-export const deleteProject = createAsyncThunk(
-  "products/deleteProject",
-  async (projectId) => {
-    await axiosClient.delete(`/products/${projectId}`);
-    return projectId;
+      if (filterHome.idTour) {
+        params.append("categoryId", filterHome.idTour);
+        //biến lựa chọn “Tour trong / ngoài nước” thành điều kiện lọc API => /products?categoryId=1
+      }
+      if (filterHome.departure) {
+        params.append("departure", filterHome.departure);
+      }
+      if (filterHome.destination) {
+        params.append("destination", filterHome.destination);
+      }
+      if (filterHome.date) {
+        params.append("startDate", filterHome.date.toISOString().split("T")[0]);
+      }
+      if (filterHome.duration) {
+        params.append("durationRange", filterHome.duration);
+      }
+
+      const res = await axiosClient.get(`/toursFilter?${params.toString()}`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 
@@ -77,6 +93,9 @@ const productSlice = createSlice({
   initialState: {
     products: [],
     filterProducts: [],
+    filterHome: [],
+    totalFilterHome: [],
+    relatedProducts: [],
     currentProduct: null,
     filter: "All",
     loading: false,
@@ -115,15 +134,15 @@ const productSlice = createSlice({
         //action.error.message là nó lấy lỗi mặc định Redux tự tạo, ví dụ như:"Request failed with status code 404"
         //Nếu bạn muốn lấy lỗi từ rejectWithValue. Phải viết state.error = action.payload?.message;
       })
-      .addCase(addProject.pending, (state) => {
+      .addCase(fetchRelatedProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addProject.fulfilled, (state, action) => {
+      .addCase(fetchRelatedProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.lists.push(action.payload);
+        state.relatedProducts = action.payload;
       })
-      .addCase(addProject.rejected, (state, action) => {
+      .addCase(fetchRelatedProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
@@ -139,34 +158,17 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(updateProjectId.pending, (state) => {
+      .addCase(fetchProductsFilter.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-      .addCase(updateProjectId.fulfilled, (state, action) => {
+      .addCase(fetchProductsFilter.fulfilled, (state, action) => {
         state.loading = false;
-        const { id } = action.payload;
-        const index = state.lists.findIndex(l => l.id === id);
-        if (index > -1) {
-          state.lists[index] = action.payload;
-        }
-        state.currentProject = action.payload;
+        state.filterHome = action.payload.data;
+        state.totalFilterHome = action.payload.total;
       })
-      .addCase(updateProjectId.rejected, (state, action) => {
+      .addCase(fetchProductsFilter.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
-      })
-      .addCase(deleteProject.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteProject.fulfilled, (state, action) => {
-        state.loading = false;
-        state.lists = state.lists.filter((l) => l.id !== action.payload);
-      })
-      .addCase(deleteProject.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });

@@ -169,11 +169,13 @@ const Product = () => {
   const currentData = finalData.slice(indexOfFirst, indexOfLast); //hoặc viết thẳng ra như ở dưới productSorting.slice(indexOfFirst, indexOfLast)
 
   return (
-    <div className="mx-20 my-10">
+    <div className="mx-4 my-6 md:mx-20 md:my-10">
       {loading && <LoadingSpinner />}
       {/* Khi đang load nó sẽ hiển thị loading */}
-      <div className="flex">
-        <div className="w-1/3">
+
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* FILTER */}
+        <div className="w-full md:w-1/3">
           <Filter
             handleFilterRadio={handleFilterRadio}
             departure={departure}
@@ -181,18 +183,26 @@ const Product = () => {
             options={placeOptions}
           />
         </div>
-        <div className="w-2/3">
-          <div>
+
+        {/* PRODUCT LIST */}
+        <div className="w-full md:w-2/3">
+          <div className="mb-6">
             <img
               src="https://www.luavietours.com/wp/wp-content/uploads/2025/05/uu-dai-pc.jpg"
               alt=""
+              className="w-full object-cover rounded-md"
             />
           </div>
+
           <div>
             {finalData.length > 0 ? (
               <TourCategory
                 title={finalTitle || "Tour Du Lịch"}
-                data={productSorting.length > 0 ? productSorting.slice(indexOfFirst, indexOfLast) : currentData}
+                data={
+                  productSorting.length > 0
+                    ? productSorting.slice(indexOfFirst, indexOfLast)
+                    : currentData
+                }
                 handleSort={handleSort}
               />
             ) : (
@@ -201,8 +211,9 @@ const Product = () => {
               </p>
             )}
           </div>
+
           {/* Button phân trang */}
-          <div className="flex justify-center items-center gap-3 mt-10">
+          <div className="flex justify-center items-center gap-3 mt-10 flex-wrap">
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
@@ -212,7 +223,7 @@ const Product = () => {
             </button>
 
             <span>
-              {currentPage} / {Math.ceil(finalData.length / itemsPerPage)} 
+              {currentPage} / {Math.ceil(finalData.length / itemsPerPage)}
               {/* //Math.ceil: làm tròn lên thành số nguyên. Ví dụ: 25/6=4.6 => 5*/}
             </span>
 

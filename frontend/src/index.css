@@ -14,15 +14,16 @@
   }
 }
 
-
-/* Ẩn spin buttons nút tăng giảm ở các ô input cho các trình duyệt dựa trên Webkit (Chrome, Safari, Edge) */
-.no-spin::-webkit-outer-spin-button,
-.no-spin::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Ẩn spin buttons cho Firefox */
-.no-spin {
-  -moz-appearance: textfield;
+/* Ẩn nút tăng giảm input trong type number */
+@layer base {
+  /* Chrome, Edge, Safari */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }

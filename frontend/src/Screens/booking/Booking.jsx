@@ -1,0 +1,162 @@
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../components/Loading/Loading";
+import Contacts from "../../components/contacts/Contacts";
+import PassengerCount from "../../components/PassengerCount/PassengerCount";
+import GuestInfo from "../../components/GuestInfo/GuestInfo";
+import TakeNote from "../../components/TakeNote/TakeNote";
+import Agree from "../../components/Agree/Agree";
+import Payment from "../../components/Payment/Payment";
+import PayBox from "../../components/PayBox/PayBox";
+import { addCart } from "../../redux/slices/cartSlice";
+
+const Booking = () => {
+  const orders = useSelector((state) => state.orders.orders);
+  const navigate = useNavigate();
+  const orderByUser = useSelector((state) => state.orders.orderByUser);
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.products.loading);
+
+  const [adultCount, setAdultCount] = useState(0);
+  const [childCount, setChildCount] = useState(0);
+
+  const adultTotal = adultCount * orderByUser.price;
+  const childTotal = childCount * orderByUser.price * 0.8;
+  const Total = adultTotal + childTotal;
+
+  //Gộp tất cả các thông tin của khách hàng lại
+  const [userInfo, setUserInfo] = useState({
+    name: orderByUser.userName,
+    email: orderByUser.userEmail,
+    phone: orderByUser.userPhone,
+    address: "",
+  });
+
+  //Tạo một cái danh sách rỗng để lưu toàn bộ hành khách đi cùng
+  const [guests, setGuests] = useState([]);
+
+  //Gộp tất cả các note của khách hàng lại
+  const [userNote, setUserNote] = useState({
+    have: null,
+    takeNote: null,
+  });
+
+  //Khách hàng đã đồng ý tích đọc kĩ điều khoản
+  const [agree, setAgree] = useState(false);
+
+  //Khách hàng chọn phương thức thanh toán
+  const [selectedPayment, setSelectedPayment] = useState(null);
+
+  //Kiểm tra lỗi thiếu thông tin khách hàng
+  const handleCart = () => {
+    const validations = [
+      {
+        condition:
+          !userInfo.name ||
+          !userInfo.email ||
+          !userInfo.phone ||
+          !userInfo.address,
+        message: "Thiếu thông tin liên lạc",
+      },
+      { condition: adultCount <= 0, message: "Phải có ít nhất 1 người lớn" },
+      {
+        condition:
+          guests.length !== adultCount + childCount ||
+          guests.some((g) => !g.fullName || !g.sex || !g.birthday),
+        message: "Thiếu thông tin hành khách",
+      },
+      {
+        condition: !selectedPayment,
+        message: "Chưa chọn phương thức thanh toán",
+      },
+      { condition: !agree, message: "Chưa đồng ý điều khoản" },
+      { condition: Total <= 0, message: "Tổng tiền không hợp lệ" },
+    ];
+
+    const error = validations.find((v) => v.condition);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    const cart = {
+      userInfo,
+      orderByUser,
+      adultCount,
+      childCount,
+      guests,
+      Total,
+      userNote,
+      agree,
+      selectedPayment,
+    };
+
+    dispatch(addCart(cart));
+    navigate("/confirm");
+  };
+
+  return (
+    <div className="mx-4 md:mx-20 my-10">
+      {loading && <LoadingSpinner />}
+
+      <h2 className="text-3xl md:text-4xl font-bold text-[#013879]">
+        Tổng Quan Về Chuyến Đi
+      </h2>
+
+      {/* Layout */}
+      <div className="flex flex-col lg:flex-row gap-10 items-start">
+        {/* LEFT */}
+        <div className="w-full lg:w-2/3 mt-10">
+          <Contacts orderByUser={orderByUser} setUserInfo={setUserInfo} />
+
+          <div className="mt-10" />
+
+          <PassengerCount
+            adultCount={adultCount}
+            childCount={childCount}
+            setAdultCount={setAdultCount}
+            setChildCount={setChildCount}
+          />
+
+          <div className="mt-10" />
+
+          <GuestInfo
+            adultCount={adultCount}
+            childCount={childCount}
+            guests={guests}
+            setGuests={setGuests}
+          />
+
+          <div className="mt-10" />
+
+          <TakeNote setUserNote={setUserNote} />
+
+          <div className="mt-5" />
+
+          <Agree agree={agree} setAgree={setAgree} />
+
+          <div className="mt-10" />
+
+          <Payment
+            selectedPayment={selectedPayment}
+            setSelectedPayment={setSelectedPayment}
+          />
+        </div>
+
+        {/* RIGHT */}
+        <div className="w-full lg:w-1/3 h-auto mt-0 lg:mt-10 bg-white shadow-lg p-6 md:p-9">
+          <PayBox
+            orderByUser={orderByUser}
+            adultCount={adultCount}
+            childCount={childCount}
+            Total={Total}
+            handleCart={handleCart}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Booking;

@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTicket,
@@ -8,18 +8,59 @@ import {
 import Sortof from "../Sortof/Sortof";
 
 const TourCategory = ({ title, data, handleSort }) => {
+  const navigate = useNavigate();
+  //Hàm chuyển ngày, tháng, năm chỉ còn ngày với tháng
+  const formatDate = (dateStr) =>
+    new Date(dateStr)
+      .toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+      })
+      .replace("/", "-");
+
   return (
     <div>
-      <div className="flex items-center justify-between">
-      <h2 className="my-10 text-4xl font-bold text-[#013879] text-center">
-        {title}
-      </h2>
-      <Sortof handleSort={handleSort}/>
+      <div
+        className="
+          flex 
+          items-center 
+          justify-between 
+          gap-4 md:gap-0
+        "
+      >
+        <h2
+          className="
+            my-6 md:my-10 
+            text-2xl md:text-4xl 
+            font-bold 
+            text-[#013879] 
+            text-left md:text-center
+          "
+        >
+          {title}
+        </h2>
+        <Sortof handleSort={handleSort} />
       </div>
-      <div className="grid grid-cols-none sm:grid-cols-3 justify-items-stretch items-start gap-x-4 gap-y-12">
+
+      <div
+        className="
+          grid 
+          grid-cols-1 
+          sm:grid-cols-2 
+          lg:grid-cols-3 
+          justify-items-stretch 
+          items-start 
+          gap-x-4 
+          gap-y-12
+        "
+      >
         {data && data.length > 0
           ? data.map((tour) => (
-              <div key={tour.id} className="leading-6">
+              <div
+                key={tour.id}
+                className="leading-6 cursor-pointer"
+                onClick={() => navigate(`/tour-du-lich/${tour.slug}`)}
+              >
                 <div className="h-[219.23px] overflow-hidden">
                   <img
                     src={tour.images[0]}
@@ -44,6 +85,19 @@ const TourCategory = ({ title, data, handleSort }) => {
                   <FontAwesomeIcon icon={faJetFighter} className="text-sm" />{" "}
                   Hãng bay: <span className="font-semibold">Vietjet Air</span>
                 </p>
+                <div className="text-sm select-none">
+                  <div className="inline-block space-x-1">
+                    <span>Ngày đi:</span>
+                    {tour.departures.map((date) => (
+                      <div
+                        key={date.departureId}
+                        className="inline-flex items-center justify-center rounded-full bg-[#d4f1ff] px-2 m-1 font-medium"
+                      >
+                        <p>{formatDate(date.startDate)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <p className="text-red-500 text-xl font-semibold">
                   {tour.price.toLocaleString("vi-VN")}
                   <span className="text-sm">VNĐ</span>

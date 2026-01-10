@@ -1,4 +1,4 @@
-const News = () => {
+const News = ({ posts }) => {
   return (
     <div className="bg-[#f6f8fa] w-full py-5">
       <div className="mx-20">
@@ -6,10 +6,17 @@ const News = () => {
           Tin Tức Và Sự Kiện
         </h2>
         <div className="flex items-center justify-center space-x-4">
-          <div className="bg-blue-500 w-[294.62px] h-[400.87px]"></div>
-          <div className="bg-blue-500 w-[294.62px] h-[400.87px]"></div>
-          <div className="bg-blue-500 w-[294.62px] h-[400.87px]"></div>
-          <div className="bg-blue-500 w-[294.62px] h-[400.87px]"></div>
+          {posts?.map((post) => (
+            <div
+              key={post.id}
+            >
+              <div className="bg-blue-500 w-[294.62px] h-[400.87px]">
+                <p>{post.title}</p>
+                <p>{post.author}</p>
+                <p>{post.createdAt}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       <div className="text-center m-20">

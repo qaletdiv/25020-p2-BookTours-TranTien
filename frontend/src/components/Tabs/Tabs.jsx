@@ -20,7 +20,7 @@ export const Tab = ({ index, children }) => {
 
   return (
     <button
-      className={`px-4 py-2 cursor-pointer border border-[#f2f2f2] relative top-[1px]
+      className={`p-2 md:px-4 md:py-2 cursor-pointer border border-[#f2f2f2] relative top-[1px] 
         ${activeTab === index ? "bg-[#013879] text-white border-b-white" : "bg-[#f2f2f26b]"}
       `}
       onClick={() => setActiveTab(index)}
@@ -34,6 +34,6 @@ export const Tab = ({ index, children }) => {
 export const TabPanel = ({ index, children }) => {
   const { activeTab } = useTabs();
   return activeTab === index ? (
-    <div className="p-3 min-w-[750px] bg-white">{children}</div>
+    <div className="pt-4 md:p-3 md:min-w-[750px] bg-white">{children}</div>
   ) : null;
 };

@@ -25,12 +25,15 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     accessToken: localStorage.getItem("accessToken") || null,
+    user: localStorage.getItem("user") || null,
+    //localstorage sản phẩm
   },
   reducers: {
     logout: (state) => {
         // state.user = null;
         state.accessToken = null;
         localStorage.removeItem("accessToken")
+        localStorage.removeItem("user")
     }
   },
   extraReducers: (builder) => {
@@ -52,10 +55,12 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
+        const { accessToken, user } = action.payload;
         state.loading = false;
         state.error = null;
         state.accessToken = action.payload.accessToken;
-        localStorage.setItem("accessToken", action.payload.accessToken);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("user", JSON.stringify(user));
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;

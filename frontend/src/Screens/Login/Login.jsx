@@ -1,73 +1,139 @@
-import { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../redux/slices/authSlice";
 
+// LoginSchema - Luật validate cho form đăng nhập
+const LoginSchema = Yup.object({
+  email: Yup.string()
+    .email("Email không hợp lệ")
+    .required("Vui lòng nhập email"),
+  password: Yup.string()
+    .required("Vui lòng nhập mật khẩu"),
+});
+
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const loading = useSelector((state) => state.auth.loading);
   const error = useSelector((state) => state.auth.error);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // values và setSubmitting do Formik sinh ra
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await dispatch(login({ email, password })).unwrap(); // unwrap sẽ throw error nếu login thất bại
+      await dispatch(
+        login({
+          email: values.email,
+          password: values.password,
+        })
+      ).unwrap();
+
       navigate("/");
     } catch (err) {
       console.log(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="w-1/2 bg-white rounded-lg my-20 mx-auto">
-    <div className="w-[200px] h-auto m-8 mx-auto">
-        <img src="https://www.luavietours.com/assets/img/common/logo.jpg" alt="logo" className="h-full w-full" />
-    </div>
-    <form onSubmit={handleSubmit} className="w-[525px] h-auto px-10 py-10 rounded-lg shadow-[0_4px_15px_rgba(0,0,0,0.1),_0_2px_5px_rgba(0,0,0,0.08)] mx-auto">
-      <h2 className="mb-4 text-3xl font-bold text-[#013879] text-center">Đăng Nhập</h2>
-      <div className="flex flex-col mb-3 group">
-        <label htmlFor="email" className="font-bold">Email <span className="text-red-500">*</span></label>
-        <input
-          type="email"
-          id="email" //id username phải trùng với htmlFor ở label để khi gõ input label nó biết
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={loading}
-          placeholder="Email"
-          required
-          className="no-spin py-3 focus:outline-none"
-        />
-        <div className="w-full h-[1.75px] bg-black"></div>
-        <p className="mt-1 text-xs text-red-500 transition-all duration-300 ease-out opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-5">Thông tin bắt buộc</p>
+    <div className="w-full min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-[600px] bg-white my-10">
+
+        {/* Logo */}
+        <div className="w-[180px] h-auto mx-auto my-6">
+          <img
+            src="https://www.luavietours.com/assets/img/common/logo.jpg"
+            alt="logo"
+            className="w-full h-full object-contain"
+          />
+        </div>
+
+        <Formik
+          initialValues={{
+            email: "",
+            password: "",
+          }}
+          validationSchema={LoginSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form
+              className="
+                w-full
+                px-6 sm:px-10
+                py-8
+                shadow-[0_4px_15px_rgba(0,0,0,0.1),_0_2px_5px_rgba(0,0,0,0.08)]
+                mx-auto
+              "
+            >
+              <h2 className="mb-6 text-3xl font-bold text-[#013879] text-center">
+                Đăng Nhập
+              </h2>
+
+              {/* Email */}
+              <div className="flex flex-col mb-4">
+                <label className="font-bold">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <Field
+                  name="email"
+                  type="email"
+                  disabled={loading}
+                  placeholder="Email"
+                  className="py-3 focus:outline-none"
+                />
+                <div className="w-full h-[1.75px] bg-black"></div>
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="mt-1 text-xs text-red-500"
+                />
+              </div>
+
+              {/* Mật khẩu */}
+              <div className="flex flex-col mb-4">
+                <label className="font-bold">
+                  Mật khẩu <span className="text-red-500">*</span>
+                </label>
+                <Field
+                  name="password"
+                  type="password"
+                  disabled={loading}
+                  placeholder="Mật khẩu"
+                  className="py-3 focus:outline-none"
+                />
+                <div className="w-full h-[1.75px] bg-black"></div>
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="mt-1 text-xs text-red-500"
+                />
+              </div>
+
+              <div className="text-center mt-6">
+                {error && <p className="text-red-500 mb-2">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={loading || isSubmitting}
+                  className="button w-full sm:w-auto px-10"
+                >
+                  {loading ? "Đang check..." : "Đăng Nhập"}
+                </button>
+              </div>
+
+              <p className="text-xs text-center mt-4">
+                Chưa có tài khoản?{" "}
+                <Link to="/dang-ky">
+                  <span className="italic text-[#013879]">Đăng Ký</span>
+                </Link>
+              </p>
+            </Form>
+          )}
+        </Formik>
       </div>
-      <div className="flex flex-col mb-3 group">
-        <label htmlFor="password" className="font-bold">Mật Khẩu <span className="text-red-500">*</span></label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={loading}
-          placeholder="Mật Khẩu"
-          required
-          className="no-spin py-3 focus:outline-none"
-        />
-        <div className="w-full h-[1.75px] bg-black"></div>
-        <p className="mt-1 text-xs text-red-500 transition-all duration-300 ease-out opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-5">Thông tin bắt buộc</p>
-      </div>
-      <div className="text-center">
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <button type="submit" disabled={loading} className="button m-6">
-        {loading ? "Đang check..." : "Đăng Nhập"}
-      </button>
-      </div>
-      <p className="text-xs text-center">
-        Chưa có Tài Khoản ? <Link to="/dang-ky"><span className="italic text-[#013879]">Đăng Ký</span> </Link>
-      </p>
-    </form>
     </div>
   );
 };

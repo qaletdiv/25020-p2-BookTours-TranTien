@@ -88,3 +88,11 @@ export const PlaceOptions2 = [
   "Nhật Bản",
   "Trung Quốc",
 ];
+
+
+export const DayOptions = [
+  { id: 1, text: "1-3 ngày" },
+  { id: 2, text: "4-7 ngày" },
+  { id: 3, text: "8-14 ngày" },
+  { id: 4, text: "Trên 14 ngày" },
+];

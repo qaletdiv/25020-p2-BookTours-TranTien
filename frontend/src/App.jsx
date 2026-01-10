@@ -7,21 +7,22 @@ import Register from "./Screens/Register/Register";
 import Login from "./Screens/Login/Login";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Product from "./Screens/Product/Product";
-import Tabs from "./components/TestYub/TestYub";
+import Booking from "./Screens/booking/Booking";
+import TestYub from "./components/TestYub/TestYub";
+import Confirm from "./Screens/Confirm/Confirm";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
+import About from "./Screens/about/About";
+import UserInfo from "./Screens/userInfo/userInfo";
+import "./App.css";
+
 
 const App = () => {
   return (
-    <BrowserRouter className="bg-white dark:bg-slate-900 text-black dark:text-white font-bai-jamjuree">
+    <BrowserRouter>
       <Navbar />
+      <ScrollToTop />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<Home />} />
         <Route
           path="/tour-du-lich"
           element={
@@ -30,10 +31,42 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/tour-du-lich/:id" element={<ProductDetail />}/>
+        <Route
+          path="/tour-du-lich/:slug"
+          element={
+            <ProtectedRoute>
+              <ProductDetail />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/dang-ky" element={<Register />} />
         <Route path="/dang-nhap" element={<Login />} />
-        <Route path="/test" element={<Tabs />}/>
+        <Route path="/test" element={<TestYub />} />
+        <Route
+          path="/booking"
+          element={
+            <ProtectedRoute>
+              <Booking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/confirm"
+          element={
+            <ProtectedRoute>
+              <Confirm />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/gioi-thieu" element={<About />} />
+        <Route
+          path="/info"
+          element={
+            <ProtectedRoute>
+              <UserInfo />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </BrowserRouter>
