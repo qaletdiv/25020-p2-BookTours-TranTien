@@ -17,33 +17,17 @@ export const fetchRelatedProducts = createAsyncThunk(
   }
 );
 
-// Thunk gọi API filter sản phẩm
 export const fetchFilterProducts = createAsyncThunk(
   "products/fetchFilterProducts",
   async (filterParams, thunkAPI) => {
-    //thunkAPI là 1 cái “hộp dụng cụ” Redux đưa cho bạn, bên trong có mấy thứ hữu ích như:
-    //dispatch → để dispatch action khác nếu muốn
-    //getState → xem state hiện tại
-    //rejectWithValue → trả về lỗi tuỳ chỉnh
-    //fulfillWithValue → trả về dữ liệu tuỳ chỉnh
     try {
-      // filterParams = { id: "1" } hoặc { category: "domestic" }
       const query = new URLSearchParams(filterParams).toString();
-      //Nó biến cái object của bạn thành query string để gắn lên URL.
-      //VD: filterParams = { id: 3, category: "foreign" } => Biến thành: "id=3&category=foreign"
       const response = await axiosClient.get(`/products?${query}`);
-      // -> gọi tới: /api/products?id=3
-      //Dấu hỏi “?” chính là nơi để truyền query lên server
       return response.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data || { message: "Lỗi server" }
       );
-      //Nếu server trả lỗi (ví dụ 404, 500, timeout):
-      //→ lấy thông báo lỗi ở err.response.data
-      //Nếu không có gì (server chết, mất mạng, lỗi bất ngờ):
-      //→ trả về { message: "Lỗi server" }
-      //Sau đó gửi lỗi này về slice bằng rejectWithValue
     }
   }
 );
@@ -65,7 +49,6 @@ export const fetchProductsFilter = createAsyncThunk(
 
       if (filterHome.idTour) {
         params.append("categoryId", filterHome.idTour);
-        //biến lựa chọn “Tour trong / ngoài nước” thành điều kiện lọc API => /products?categoryId=1
       }
       if (filterHome.departure) {
         params.append("departure", filterHome.departure);
@@ -131,8 +114,6 @@ const productSlice = createSlice({
       .addCase(fetchFilterProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
-        //action.error.message là nó lấy lỗi mặc định Redux tự tạo, ví dụ như:"Request failed with status code 404"
-        //Nếu bạn muốn lấy lỗi từ rejectWithValue. Phải viết state.error = action.payload?.message;
       })
       .addCase(fetchRelatedProducts.pending, (state) => {
         state.loading = true;

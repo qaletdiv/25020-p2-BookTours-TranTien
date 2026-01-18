@@ -15,7 +15,8 @@ import {
 import { Tabs, Tab, TabList, TabPanel } from "../../components/Tabs/Tabs";
 import LoadingSpinner from "../../components/Loading/Loading";
 import TourRelevant from "../../components/TourRelevant/TourRelevant";
-import { fetchOrders, fetchOrderId } from "../../redux/slices/orderSlice";
+import { addCart } from "../../redux/slices/cartSlice";
+import RevealOnScroll from "../../components/RevealOnScroll/RevealOnScroll";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -23,15 +24,14 @@ const ProductDetail = () => {
   const product = useSelector((state) => state.products.currentProduct);
   const relatedProduct = useSelector((state) => state.products.relatedProducts);
   const user = useSelector((state) => state.auth.user);
-  const orderByUser = useSelector((state) => state.orders.orderByUser);
-  const orders = useSelector((state) => state.orders.orders);
+  const accessToken = useSelector((state) => state.auth.accessToken);
+  const orderByUser = useSelector((state) => state.cart.orderByUser);
   const [tourPrice, setTourPrice] = useState(null);
   const [dateTour, setDateTour] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const { slug } = useParams();
   const dispatch = useDispatch();
 
-  //Click vào ảnh thì
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -40,21 +40,12 @@ const ProductDetail = () => {
     const normalizedSlug = slug.toLowerCase();
     dispatch(fetchProductId(normalizedSlug));
     dispatch(fetchRelatedProducts(normalizedSlug));
-    dispatch(fetchOrders());
     setTourPrice(null);
   }, [slug, dispatch]);
 
-  //Khi xem ảnh thì không scroll được nữa
   useEffect(() => {
-    //document → Toàn bộ trang HTML | body → Thẻ <body> (chứa toàn bộ nội dung bạn nhìn thấy) | style → Style inline của thẻ đó | overflow → Thuộc tính CSS quyết định có cho cuộn hay không
     document.body.style.overflow = isOpen ? "hidden" : "auto";
   }, [isOpen]);
-
-  // console.log("relatedProduct change:", relatedProduct);
-  // console.log("DEPARTURES:", product?.departures);
-  console.log("user:", user);
-  console.log("orderByUser:", orderByUser);
-  console.log("orders:", orders);
 
   //Hàm chuyển ngày, tháng, năm chỉ còn ngày với tháng
   const formatDate = (dateStr) =>
@@ -65,23 +56,45 @@ const ProductDetail = () => {
       })
       .replace("/", "-");
 
-  const handleOrder = () => {
-    if (!tourPrice || !dateTour) {
-      alert("Vui lòng chọn ngày khởi hành");
-      return;
-    }
+  const handleOrder = async () => {
+  // Chưa đăng nhập
+  if (!accessToken) {
+    alert("Vui lòng đăng nhập để đặt tour");
+    navigate("/dang-nhap");
+    return;
+  }
 
-    const orderData = {
-      productId: product.id,
-      productName: product.name,
-      price: tourPrice,
-      departureDate: dateTour,
-      returnDate: endDate,
-    };
+  // Chưa chọn ngày / giá
+  if (!tourPrice || !dateTour) {
+    alert("Vui lòng chọn ngày khởi hành");
+    return;
+  }
 
-    dispatch(fetchOrderId(orderData));
-    navigate("/booking");
+  const userInfo = user ? JSON.parse(user) : {};
+
+  const orderData = {
+    productId: product.id,
+    productName: product.name,
+    price: tourPrice,
+    departureDate: dateTour,
+    returnDate: endDate,
+    userName: userInfo.name || "",
+    userEmail: userInfo.email || "",
+    userPhone: userInfo.phone || "",
   };
+
+  try {
+    const result = await dispatch(addCart(orderData));
+    if (result.payload) {
+      navigate("/booking");
+    } else {
+      alert("Có lỗi khi đặt tour, vui lòng thử lại");
+    }
+  } catch (error) {
+    alert("Có lỗi khi đặt tour: " + error.message);
+  }
+};
+
 
   return (
     <>
@@ -150,62 +163,64 @@ const ProductDetail = () => {
             </button>
           </div>
         </div>
-        <div className="md:mt-8 flex flex-col space-y-1 md:flex-row md:space-x-1 md:space-y-0 h-[462px]">
-          <div className="w-full h-2/3 md:w-1/2 md:h-full relative overflow-hidden">
-            <img
-              src={product?.images[0]}
-              alt=""
-              className="w-full h-full object-cover"
-              onClick={() => {
-                setCurrentIndex(0);
-                setIsOpen(true);
-              }}
-            />
-          </div>
-          <div className="flex flex-row items-start justify-start space-x-1 w-full h-1/3 md:flex-col md:space-x-0 md:w-1/2 md:h-full md:space-y-1">
-            <div className="flex w-full h-1/2 space-x-1 overflow-hidden">
+        <RevealOnScroll delay={200}>
+          <div className="md:mt-8 flex flex-col space-y-1 md:flex-row md:space-x-1 md:space-y-0 h-[462px]">
+            <div className="w-full h-2/3 md:w-1/2 md:h-full relative overflow-hidden">
               <img
-                src={product?.images[1]}
+                src={product?.images[0]}
                 alt=""
-                className="w-1/2 object-cover"
+                className="w-full h-full object-cover"
                 onClick={() => {
-                  setCurrentIndex(1);
-                  setIsOpen(true);
-                }}
-              />
-              <img
-                src={product?.images[1]}
-                alt=""
-                className="w-1/2 object-cover"
-                onClick={() => {
-                  setCurrentIndex(1);
+                  setCurrentIndex(0);
                   setIsOpen(true);
                 }}
               />
             </div>
-            <div className="flex w-full h-1/2 space-x-1 overflow-hidden">
-              <img
-                src={product?.images[1]}
-                alt=""
-                className="w-1/2 object-cover"
-                onClick={() => {
-                  setCurrentIndex(1);
-                  setIsOpen(true);
-                }}
-              />
-              <img
-                src={product?.images[1]}
-                alt=""
-                className="w-1/2 object-cover"
-                onClick={() => {
-                  setCurrentIndex(1);
-                  setIsOpen(true);
-                }}
-              />
+            <div className="flex flex-row items-start justify-start space-x-1 w-full h-1/3 md:flex-col md:space-x-0 md:w-1/2 md:h-full md:space-y-1">
+              <div className="flex w-full h-1/2 space-x-1 overflow-hidden">
+                <img
+                  src={product?.images[1]}
+                  alt=""
+                  className="w-1/2 object-cover"
+                  onClick={() => {
+                    setCurrentIndex(1);
+                    setIsOpen(true);
+                  }}
+                />
+                <img
+                  src={product?.images[1]}
+                  alt=""
+                  className="w-1/2 object-cover"
+                  onClick={() => {
+                    setCurrentIndex(1);
+                    setIsOpen(true);
+                  }}
+                />
+              </div>
+              <div className="flex w-full h-1/2 space-x-1 overflow-hidden">
+                <img
+                  src={product?.images[1]}
+                  alt=""
+                  className="w-1/2 object-cover"
+                  onClick={() => {
+                    setCurrentIndex(1);
+                    setIsOpen(true);
+                  }}
+                />
+                <img
+                  src={product?.images[1]}
+                  alt=""
+                  className="w-1/2 object-cover"
+                  onClick={() => {
+                    setCurrentIndex(1);
+                    setIsOpen(true);
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full -mt-12 md:hidden">
+        </RevealOnScroll>
+        <div className="w-full md:hidden relative z-10 -mt-12 bg-white">
           <div className="h-auto">
             <p className="font-semibold text-xl">Thông Tin Cơ Bản</p>
             <ul className="list-disc">
@@ -295,11 +310,6 @@ const ProductDetail = () => {
                     )
                   )}
                 </ul>
-                {/* Object.entries dùng để biến object thành mảng
-                map(([day, content]) là mỗi phần tử trong mảng là 1 cặp mảng con. ( day1: "Hà Nội – Paris" =>  ["day1", "Hà Nội – Paris"])
-                {day.replace("day", "Ngày ")} đổi tên day thành Ngày 
-                className="capitalize" là viết hoa chữ cái đầu mỗi từ
-                */}
               </TabPanel>
 
               {/* ===== TAB 3: QUY ĐỊNH & PHỤ THU ===== */}
@@ -369,10 +379,12 @@ const ProductDetail = () => {
         </div>
         <div></div>
       </div>
-      <TourRelevant
-        title={"Sản Phẩm Liên Quan"}
-        data={relatedProduct.slice(0, 4)}
-      />
+      <RevealOnScroll delay={300}>
+        <TourRelevant
+          title={"Sản Phẩm Liên Quan"}
+          data={relatedProduct.slice(0, 4)}
+        />
+      </RevealOnScroll>
       {/* Click vào ảnh để xem hình */}
       <div
         className={`

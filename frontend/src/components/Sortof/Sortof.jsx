@@ -6,7 +6,6 @@ const sortOfPrice = ["Giá thấp → cao", "Giá cao → thấp"];
 
 const Sortof = ({ handleSort }) => {
   const [isOpen, setIsOpen] = useState(false);
-  // const [selectedValue, setSelectedValue] = useState("Giá thấp -> cao");
   const dropdownRef = useRef(null);
   useEffect(() => {
     function handleClickOutside(event) {
@@ -21,7 +20,6 @@ const Sortof = ({ handleSort }) => {
   }, []);
 
   const handleSelect = (value) => {
-    // setSelectedValue(value);
     handleSort(value)
     setIsOpen(false);
   };

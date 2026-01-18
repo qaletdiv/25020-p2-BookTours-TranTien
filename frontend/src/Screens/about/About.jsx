@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import RevealOnScroll from "../../components/RevealOnScroll/RevealOnScroll";
 
 const timelineData = [
   {
@@ -84,41 +85,44 @@ const About = () => {
           <h3 className="text-2xl md:text-3xl font-bold mb-6">
             Quá Trình Thành Lập
           </h3>
+          <RevealOnScroll>
+            <div className="space-y-3">
+              {timelineData.map((data, i) => (
+                <div key={i} className="flex items-start gap-4 relative">
+                  {/* YEAR */}
+                  <div className="w-28 text-right font-bold text-black shrink-0">
+                    {data.year}
+                  </div>
 
-          <div className="space-y-3">
-            {timelineData.map((data, i) => (
-              <div key={i} className="flex items-start gap-4 relative">
-                {/* YEAR */}
-                <div className="w-28 text-right font-bold text-black shrink-0">
-                  {data.year}
-                </div>
+                  {/* TIMELINE */}
+                  <div className="relative w-6 flex justify-center">
+                    {/* LINE */}
+                    <span className="absolute top-4 h-full border-l-[1.5px] border-dashed border-[#0394d9]"></span>
 
-                {/* TIMELINE */}
-                <div className="relative w-6 flex justify-center">
-                  {/* LINE */}
-                  <span className="absolute top-4 h-full border-l-[1.5px] border-dashed border-[#0394d9]"></span>
+                    {/* DOT */}
+                    <div className="relative z-10 flex items-center justify-center w-4 h-4 rounded-full border border-[#0394d9] bg-white">
+                      <span className="w-2 h-2 rounded-full bg-[#0394d9]"></span>
+                    </div>
+                  </div>
 
-                  {/* DOT */}
-                  <div className="relative z-10 flex items-center justify-center w-4 h-4 rounded-full border border-[#0394d9] bg-white">
-                    <span className="w-2 h-2 rounded-full bg-[#0394d9]"></span>
+                  {/* CONTENT */}
+                  <div className="text-gray-900 leading-relaxed pt-1">
+                    {data.title}
                   </div>
                 </div>
-
-                {/* CONTENT */}
-                <div className="text-gray-900 leading-relaxed pt-1">
-                  {data.title}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </RevealOnScroll>
         </div>
 
         {/* HÌNH ẢNH */}
         <div className="w-full lg:w-1/2">
-          <img
-            src="https://www.luavietours.com/assets/img/gioi-thieu/img_1.jpg"
-            className="w-full rounded-md"
-          />
+          <RevealOnScroll>
+            <img
+              src="https://www.luavietours.com/assets/img/gioi-thieu/img_1.jpg"
+              className="w-full rounded-md"
+            />
+          </RevealOnScroll>
         </div>
       </div>
 
@@ -126,25 +130,27 @@ const About = () => {
       <h3 className="text-2xl md:text-3xl font-bold mb-16">
         Sản Phẩm - Dịch Vụ
       </h3>
+      <RevealOnScroll delay={100}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-20 gap-y-20 mb-20">
+          {services.map((item) => (
+            <div key={item.id}>
+              <div className="relative w-full max-w-[364px] mx-auto">
+                <img src={item.image} className="w-full h-auto" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-20 gap-y-20 mb-20">
-        {services.map((item) => (
-          <div key={item.id}>
-            <div className="relative w-[364px] h-[430px] mx-auto">
-              <img src={item.image} className="w-full h-auto" />
-
-              <div className="absolute p-4 bg-white top-[75%] w-[334px] left-1/2 -translate-x-1/2 shadow-lg">
-                <p className="text-xl font-bold text-[#013879] mb-2">
-                  {item.title}
-                </p>
-                <p>{item.content}</p>
+                <div className="absolute p-4 bg-white top-[75%] w-[334px] left-1/2 -translate-x-1/2 shadow-lg">
+                  <p className="text-xl font-bold text-[#013879] mb-2">
+                    {item.title}
+                  </p>
+                  <p>{item.content}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </RevealOnScroll>
 
       {/* ===== CHỨNG NHẬN / THÀNH TÍCH ===== */}
+      <RevealOnScroll delay={200}>
       <div className="bg-gray-100 px-6 md:px-10 py-10">
         <div className="flex items-start justify-start space-x-3 mb-6">
           <div className="bg-red-600 w-1 h-7"></div>
@@ -159,6 +165,7 @@ const About = () => {
           alt=""
         />
       </div>
+      </RevealOnScroll>
     </div>
   );
 };

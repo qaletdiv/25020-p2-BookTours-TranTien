@@ -1,11 +1,9 @@
-//Lưu giữ thông tin chung của tabs
 
 import React, {createContext, useState, useContext} from "react";
 
 const TabsContext = createContext({});
 
 export const TabsProvider = ({children, defaultIndex = 0}) => {
-    //Mặc định chọn Tabs đầu tiên
     const [activeTab, setActiveTab] = useState(defaultIndex);
 
     return (
@@ -15,7 +13,6 @@ export const TabsProvider = ({children, defaultIndex = 0}) => {
     );
 }
 
-//Để nó chỉ useContext 1 lần thôi, các lần sau dùng useTabs là được với điều kiện là được bọc trong Provider
 export const useTabs = () => {
     const context = useContext(TabsContext);
     if (!context) {

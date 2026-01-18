@@ -12,7 +12,7 @@ import TestYub from "./components/TestYub/TestYub";
 import Confirm from "./Screens/Confirm/Confirm";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import About from "./Screens/about/About";
-import UserInfo from "./Screens/userInfo/userInfo";
+import UserInfo from "./Screens/userInfo/UserInfo";
 import "./App.css";
 
 
@@ -26,17 +26,13 @@ const App = () => {
         <Route
           path="/tour-du-lich"
           element={
-            <ProtectedRoute>
               <Product />
-            </ProtectedRoute>
           }
         />
         <Route
           path="/tour-du-lich/:slug"
           element={
-            <ProtectedRoute>
               <ProductDetail />
-            </ProtectedRoute>
           }
         />
         <Route path="/dang-ky" element={<Register />} />

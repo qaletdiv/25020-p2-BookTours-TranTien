@@ -24,7 +24,6 @@ const Destination = () => {
         Điểm Đến Yêu Thích
       </h2>
       {/* Container chính: 2 cột (Flex) */}
-      {/* Đặt h-[600px] để cố định tổng chiều cao */}
       <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[600px]">
         
         {/* Cột 1: Châu Âu - Chiếm nửa chiều rộng, cao đầy đủ */}
@@ -88,7 +87,7 @@ const Destination = () => {
 
           {/* Hàng 2 (Dưới): Nhật Bản (Chiều rộng đầy đủ, nửa chiều cao) */}
           <div 
-            className="w-full h-[220px] md:h-1/2 relative overflow-hidden group" // THÊM group
+            className="w-full h-[220px] md:h-1/2 relative overflow-hidden group" 
           >
             <img
               src="https://ik.imagekit.io/tvlk/blog/2022/11/lau-dai-osaka-3.jpg?tr=q-70,c-at_max,w-1000,h-600"

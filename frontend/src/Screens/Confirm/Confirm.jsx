@@ -5,8 +5,7 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 
 export default function Confirm() {
   const navigation = useNavigate();
-  const newOrder = useSelector((state) => state.cart.currentNewOrderInCart);
-  console.log("new Order", newOrder);
+  const newOrder = useSelector((state) => state.orders.currentNewOrderInCart);
 
   //Nếu không có đơn hàng thì nó sẽ hiển thị không tìm thấy
   if (!newOrder || !newOrder.orderByUser) {
@@ -51,10 +50,7 @@ export default function Confirm() {
           </p>
           <p>
             <strong>Ngày khởi hành:</strong>{" "}
-            {newOrder.orderByUser.departureDate
-              ?.split("-")
-              .reverse()
-              .join("/")}
+            {newOrder.orderByUser.departureDate?.split("-").reverse().join("/")}
           </p>
           <p>
             <strong>Số khách:</strong> {newOrder.guests.length}

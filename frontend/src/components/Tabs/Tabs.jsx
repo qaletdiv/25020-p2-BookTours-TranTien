@@ -1,11 +1,9 @@
 import { TabsProvider, useTabs } from "./TabsContext.jsx";
 
-//Để bọc bên ngoài toàn bộ phần tất cả những gì có trong Tabs, defaultIndex có thể thay số vào để khi nó mount luôn là index đó
 export const Tabs = ({ children, defaultIndex }) => {
   return <TabsProvider defaultIndex={defaultIndex}>{children}</TabsProvider>;
 };
 
-//Dùng để css bên ngoài cho các Tab và cho các nút Tab nằm ngang
 export const TabList = ({ children }) => {
   return (
     <div className="flex space-x-1">
@@ -14,7 +12,6 @@ export const TabList = ({ children }) => {
   );
 };
 
-//Nút để chuyển tab
 export const Tab = ({ index, children }) => {
   const { activeTab, setActiveTab } = useTabs();
 
@@ -30,7 +27,6 @@ export const Tab = ({ index, children }) => {
   );
 };
 
-//Phần content khi tới có index tương ứng khi click button tab nó sẽ hiện ra, không thì nó luôn là null (không hiện)
 export const TabPanel = ({ index, children }) => {
   const { activeTab } = useTabs();
   return activeTab === index ? (

@@ -39,11 +39,11 @@ const TourRelevant = ({ title, data }) => {
       .replace("/", "-");
 
   return (
-    <div className="bg-gray-100 py-20">
+    <div className="bg-gray-100 py-10 md:py-20">
       {loading && <LoadingSpinner />}
       <div className="mx-5 md:mx-20 bg-gray-100">
-        <div className="flex items-center justify-between">
-          <h2 className="mb-10 text-4xl font-bold text-[#013879] text-center">
+        <div className="flex items-center justify-center">
+          <h2 className="mb-10 text-3xl font-bold text-[#013879]">
             {title}
           </h2>
         </div>

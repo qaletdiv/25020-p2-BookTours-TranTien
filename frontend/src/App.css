@@ -68,3 +68,25 @@
   border: 1px solid #0a3f7e;
   font-weight: 600;
 }
+
+/* Dropdown tháng & năm */
+.react-datepicker__month-select,
+.react-datepicker__year-select {
+  color: white;
+  background-color: transparent;
+  border: 1px solid white;
+}
+
+/* Option bên trong (khi mở dropdown) */
+.react-datepicker__month-select option,
+.react-datepicker__year-select option {
+  color: #0a3f7e; /* để dễ đọc khi dropdown mở */
+}
+
+.react-datepicker__month-select,
+.react-datepicker__year-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
