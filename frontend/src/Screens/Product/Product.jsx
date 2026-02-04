@@ -11,7 +11,6 @@ import {
 import { tourOptions, PlaceOptions, PlaceOptions2 } from "../../data/options";
 
 const Product = () => {
-  const dispatch = useDispatch();
   // State cho filter và phân trang
   const [categoryTitle, setCategoryTitle] = useState("");
   const [categoryId, setCategoryId] = useState(null);
@@ -22,6 +21,7 @@ const Product = () => {
   const [activeFilter, setActiveFilter] = useState("");
   const itemsPerPage = 6;
   // Redux state
+  const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products);
   const loading = useSelector((state) => state.products.loading);
   const filterProducts = useSelector((state) => state.products.filterProducts);
@@ -41,7 +41,7 @@ const Product = () => {
   // Xử lý filter theo điểm đến
   const handleDestination = (value) => {
     const result = products.filter((p) =>
-      p.destination.toLowerCase().includes(value.toLowerCase())
+      p.destination.toLowerCase().includes(value.toLowerCase()),
     );
     setDestinationList(result);
     setActiveFilter("destination");
@@ -61,8 +61,8 @@ const Product = () => {
     categoryId === 1
       ? PlaceOptions
       : categoryId === 2
-      ? PlaceOptions2
-      : PlaceOptions;
+        ? PlaceOptions2
+        : PlaceOptions;
 
   // Tính toán dữ liệu hiển thị và tiêu đề
   let finalData = [];
@@ -75,7 +75,7 @@ const Product = () => {
       const combined =
         departureList.length > 0
           ? filterProducts.filter((p) =>
-              departureList.some((d) => d.id === p.id)
+              departureList.some((d) => d.id === p.id),
             )
           : filterProducts;
       finalData = combined;
@@ -89,7 +89,7 @@ const Product = () => {
       const combined =
         filterProducts.length > 0
           ? departureList.filter((p) =>
-              filterProducts.some((f) => f.id === p.id)
+              filterProducts.some((f) => f.id === p.id),
             )
           : departureList;
       finalData = combined;
@@ -104,12 +104,12 @@ const Product = () => {
       let combined = destinationList;
       if (departureList.length > 0) {
         combined = combined.filter((p) =>
-          departureList.some((d) => d.id === p.id)
+          departureList.some((d) => d.id === p.id),
         );
       }
       if (filterProducts.length > 0) {
         combined = combined.filter((p) =>
-          filterProducts.some((f) => f.id === p.id)
+          filterProducts.some((f) => f.id === p.id),
         );
       }
       finalData = combined;
@@ -133,7 +133,7 @@ const Product = () => {
   const handleSort = (order) => {
     const sorted = sortByPrice(
       finalData.length > 0 ? finalData : products,
-      order
+      order,
     );
     setSortedProducts(sorted);
   };

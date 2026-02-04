@@ -57,44 +57,43 @@ const ProductDetail = () => {
       .replace("/", "-");
 
   const handleOrder = async () => {
-  // Chưa đăng nhập
-  if (!accessToken) {
-    alert("Vui lòng đăng nhập để đặt tour");
-    navigate("/dang-nhap");
-    return;
-  }
-
-  // Chưa chọn ngày / giá
-  if (!tourPrice || !dateTour) {
-    alert("Vui lòng chọn ngày khởi hành");
-    return;
-  }
-
-  const userInfo = user ? JSON.parse(user) : {};
-
-  const orderData = {
-    productId: product.id,
-    productName: product.name,
-    price: tourPrice,
-    departureDate: dateTour,
-    returnDate: endDate,
-    userName: userInfo.name || "",
-    userEmail: userInfo.email || "",
-    userPhone: userInfo.phone || "",
-  };
-
-  try {
-    const result = await dispatch(addCart(orderData));
-    if (result.payload) {
-      navigate("/booking");
-    } else {
-      alert("Có lỗi khi đặt tour, vui lòng thử lại");
+    // Chưa đăng nhập
+    if (!accessToken) {
+      alert("Vui lòng đăng nhập để đặt tour");
+      navigate("/dang-nhap");
+      return;
     }
-  } catch (error) {
-    alert("Có lỗi khi đặt tour: " + error.message);
-  }
-};
 
+    // Chưa chọn ngày / giá
+    if (!tourPrice || !dateTour) {
+      alert("Vui lòng chọn ngày khởi hành");
+      return;
+    }
+
+    const userInfo = user ? JSON.parse(user) : {};
+
+    const orderData = {
+      productId: product.id,
+      productName: product.name,
+      price: tourPrice,
+      departureDate: dateTour,
+      returnDate: endDate,
+      userName: userInfo.name || "",
+      userEmail: userInfo.email || "",
+      userPhone: userInfo.phone || "",
+    };
+
+    try {
+      const result = await dispatch(addCart(orderData));
+      if (result.payload) {
+        navigate("/booking");
+      } else {
+        alert("Có lỗi khi đặt tour, vui lòng thử lại");
+      }
+    } catch (error) {
+      alert("Có lỗi khi đặt tour: " + error.message);
+    }
+  };
 
   return (
     <>
@@ -249,7 +248,9 @@ const ProductDetail = () => {
             </ul>
             <div className="space-y-4">
               <p className="text-red-500 text-3xl font-semibold text-left mt-4 mb-4">
-                19.999.999
+                {tourPrice
+                  ? tourPrice.toLocaleString("vi-VN")
+                  : product?.price.toLocaleString("vi-VN")}
                 <span className="text-base">VNĐ</span>
               </p>
               <div className="text-center">
@@ -307,7 +308,7 @@ const ProductDetail = () => {
                         </strong>{" "}
                         {content}
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </TabPanel>
@@ -362,7 +363,9 @@ const ProductDetail = () => {
               </ul>
               <div className="space-y-4">
                 <p className="text-red-500 text-3xl font-semibold text-center mt-4 mb-4">
-                  19.999.999
+                  {tourPrice
+                    ? tourPrice.toLocaleString("vi-VN")
+                    : product?.price.toLocaleString("vi-VN")}
                   <span className="text-base">VNĐ</span>
                 </p>
                 <div className="text-center">
@@ -407,7 +410,8 @@ const ProductDetail = () => {
           className="absolute left-5 text-white text-4xl"
           onClick={() =>
             setCurrentIndex(
-              (currentIndex - 1 + product.images.length) % product.images.length
+              (currentIndex - 1 + product.images.length) %
+                product.images.length,
             )
           }
         >

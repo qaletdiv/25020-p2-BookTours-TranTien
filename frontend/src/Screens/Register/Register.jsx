@@ -9,7 +9,7 @@ import { register } from "../../redux/slices/authSlice";
 const RegisterSchema = Yup.object({
   name: Yup.string().required("Vui lòng nhập họ và tên"),
   phone: Yup.string()
-    .matches(/^[0-9]{10}$/, "Số điện thoại phải gồm đúng 11 chữ số")
+    .matches(/^[0-9]{10}$/, "Số điện thoại phải gồm đúng 10 chữ số")
     .required("Vui lòng nhập số điện thoại"),
   email: Yup.string()
     .email("Email không hợp lệ")

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -8,6 +8,7 @@ import {
   faBars,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+
 
 const MenuLinks = [
   { id: 1, name: "Trang Chủ", link: "/" },
@@ -44,13 +45,13 @@ const Navbar = () => {
         {/* Menu desktop */}
         <nav className="hidden md:flex space-x-6">
           {MenuLinks.map((menu) => (
-            <a
-              href={menu.link}
+            <Link
+              to={menu.link}
               key={menu.id}
               className="text-base font-medium text-[#013879] hover:text-blue-600"
             >
               {menu.name}
-            </a>
+            </Link>
           ))}
         </nav>
 

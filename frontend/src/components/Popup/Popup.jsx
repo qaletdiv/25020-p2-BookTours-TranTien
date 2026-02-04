@@ -53,7 +53,7 @@ const ContactPopup = () => {
           Vui lòng điền form dưới đây và gửi cho chúng tôi
         </p>
 
-        <form className="space-y-2 sm:space-y-3">
+        <form className="space-y-2 sm:space-y-3" onSubmit={handleClose}>
           {/* Tên */}
           <div>
             <label className="block font-bold mb-1 text-sm sm:text-base">

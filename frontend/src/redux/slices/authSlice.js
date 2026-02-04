@@ -3,9 +3,20 @@ import axiosClient from "../../api/axiosClient";
 
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ email, password, name, phone }) => {
-    const response = await axiosClient.post("/signup", { email, password, name, phone });
-    return response.data;
+  async ({ email, password, name, phone }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post("/signup", {
+        email,
+        password,
+        name,
+        phone,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Đăng ký thất bại"
+      );
+    }
   }
 );
 
@@ -47,7 +58,7 @@ const authSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Đăng ký thất bại";
+        state.error = action.payload || "Đăng ký thất bại";
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
