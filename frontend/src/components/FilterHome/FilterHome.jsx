@@ -6,7 +6,7 @@ import {
 } from "../../data/options";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchProductsFilter } from "../../redux/slices/productSlice";
 
 const selectTour = [
@@ -72,8 +72,9 @@ function SearchIcon() {
   );
 }
 
-const FilterHome = ({setHasFiltered}) => {
+const FilterHome = ({ setHasFiltered }) => {
   const dispatch = useDispatch();
+
   const [filterHome, setFilterHome] = useState({
     idTour: selectTour[0].id,
     departure: "",
@@ -111,16 +112,12 @@ const FilterHome = ({setHasFiltered}) => {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
+    return () =>
       document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
-  const secondToggleDropdown = () => setIsOpenSecond(!isOpenSecond);
-
   const handleFilter = () => {
-    setHasFiltered(true)
+    setHasFiltered(true);
     dispatch(fetchProductsFilter(filterHome));
   };
 
@@ -133,15 +130,17 @@ const FilterHome = ({setHasFiltered}) => {
             <label
               key={item.id}
               className="flex items-center gap-2 cursor-pointer"
-              onClick={() => setFilterHome({ ...filterHome, idTour: item.id })}
+              onClick={() =>
+                setFilterHome({ ...filterHome, idTour: item.id })
+              }
             >
               <span className="w-4 h-4 rounded-full border-2 border-white flex items-center justify-center">
                 <span
-                  className={`${
+                  className={
                     filterHome.idTour === item.id
                       ? "w-2 h-2 bg-white rounded-full"
                       : ""
-                  }`}
+                  }
                 />
               </span>
               <span className="text-base font-medium">{item.text}</span>
@@ -155,7 +154,7 @@ const FilterHome = ({setHasFiltered}) => {
           <div
             ref={departureRef}
             className="relative flex items-center gap-3 bg-white px-4 py-3 w-full md:w-[350px]"
-            onClick={toggleDropdown}
+            onClick={() => setIsOpen(!isOpen)}
           >
             <LocationIcon />
             <div>
@@ -170,8 +169,19 @@ const FilterHome = ({setHasFiltered}) => {
                 isOpen ? "block" : "hidden"
               }`}
             >
-              <div className="p-3 font-medium cursor-default">Chọn điểm đi</div>
-              {DestinationOptions?.map((option) => (
+              {/* RESET */}
+              <div
+                className="p-3 cursor-pointer hover:bg-gray-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFilterHome({ ...filterHome, departure: "" });
+                  setIsOpen(false);
+                }}
+              >
+                Chọn điểm đi
+              </div>
+
+              {DestinationOptions.map((option) => (
                 <div
                   key={option}
                   className={`p-3 cursor-pointer ${
@@ -198,7 +208,7 @@ const FilterHome = ({setHasFiltered}) => {
           <div
             ref={destinationRef}
             className="relative flex items-center gap-3 bg-white px-4 py-3 w-full md:w-[350px]"
-            onClick={secondToggleDropdown}
+            onClick={() => setIsOpenSecond(!isOpenSecond)}
           >
             <LocationIcon />
             <div>
@@ -213,10 +223,19 @@ const FilterHome = ({setHasFiltered}) => {
                 isOpenSecond ? "block" : "hidden"
               }`}
             >
-              <div className="p-3 font-medium cursor-default">
+              {/* RESET */}
+              <div
+                className="p-3 cursor-pointer hover:bg-gray-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFilterHome({ ...filterHome, destination: "" });
+                  setIsOpenSecond(false);
+                }}
+              >
                 Chọn điểm đến
               </div>
-              {PlaceOptions?.map((option) => (
+
+              {PlaceOptions.map((option) => (
                 <div
                   key={option}
                   className={`p-3 cursor-pointer ${
@@ -246,7 +265,14 @@ const FilterHome = ({setHasFiltered}) => {
               <CalendarIcon />
               <div>
                 <p className="text-xs text-[#0A3F7E] font-semibold">Ngày đi</p>
-                <p className="text-sm text-gray-400">
+                <p
+                  className="text-sm text-gray-400 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFilterHome({ ...filterHome, date: null });
+                    setIsOpenThird(false);
+                  }}
+                >
                   {filterHome.date
                     ? filterHome.date.toLocaleDateString("vi-VN")
                     : "Chọn ngày đi"}
@@ -255,21 +281,15 @@ const FilterHome = ({setHasFiltered}) => {
             </div>
 
             {isOpenThird && (
-              <div
-                className="absolute top-14 left-0 bg-white border shadow-lg z-10 h-[315px]"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="absolute top-14 left-0 bg-white border shadow-lg z-10 h-[315px]">
                 <DatePicker
                   selected={filterHome.date}
                   onChange={(date) => {
-                    setFilterHome((prev) => ({ ...prev, date }));
+                    setFilterHome({ ...filterHome, date });
                     setIsOpenThird(false);
                   }}
                   inline
-                  showMonthDropdown
-                  showYearDropdown
-                  dropdownMode="select"
-                  minDate={new Date()} // CHẶN NGÀY QUÁ KHỨ
+                  minDate={new Date()}
                 />
               </div>
             )}
@@ -294,8 +314,19 @@ const FilterHome = ({setHasFiltered}) => {
                 isOpenFourth ? "block" : "hidden"
               }`}
             >
-              <div className="p-3 font-medium cursor-default">Chọn số ngày</div>
-              {DayOptions?.map((option) => (
+              {/* RESET */}
+              <div
+                className="p-3 cursor-pointer hover:bg-gray-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFilterHome({ ...filterHome, duration: "" });
+                  setIsOpenFourth(false);
+                }}
+              >
+                Tất cả
+              </div>
+
+              {DayOptions.map((option) => (
                 <div
                   key={option.id}
                   className={`p-3 cursor-pointer ${
